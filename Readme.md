@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Прохоров](https://up.htmlacademy.ru/javascript/14/user/619887).
-* Наставник: `Неизвестно`.
+* Наставник: [Мурат Баркинхоев](https://up.htmlacademy.ru/javascript/14/user/186857).
 
 ---
 
