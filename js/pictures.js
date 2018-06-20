@@ -46,18 +46,18 @@ var generateRandomValueList = function (array) {
   randomValueList.length = Math.floor(Math.random() * array.length);
 
   for (var i = 0; i < randomValueList.length; i++) {
-  randomValueList[i] = generateRandomValue(array);
+    randomValueList[i] = generateRandomValue(array);
   }
 
   return randomValueList;
 };
 
-var generateUsersPhotosObjects = function (usersPhotosCount) {
+var generateUsersPhotosObjects = function (count) {
   var usersPhotos = [];
 
-  usersPhotos.length = usersPhotosCount - 1;
+  usersPhotos.length = count - 1;
 
-  for (var i = 0; i < usersPhotosCount; i++) {
+  for (var i = 0; i < count; i++) {
 
     var userPhotoObject = {
       url: generateUrl(minUrl, maxUrl),
@@ -88,6 +88,6 @@ var fragment = document.createDocumentFragment();
 
 for (var i = 0; i <= usersPhotoSet.length; i++) {
   fragment.appendChild(renderPicture(usersPhotoSet[i]));
-};
+}
 
 picturesRenderBlock.appendChild(fragment);
