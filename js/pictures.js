@@ -77,7 +77,7 @@ var usersPhotoSet = generateUsersPhotosObjects(usersPhotosCount);
 var renderPicture = function (userPhoto) {
   var pictureElement = pictureTemplate.cloneNode(true);
 
-  pictureElement.querySelector('.picture__img').src = userPhoto.url.toSring;
+  pictureElement.querySelector('.picture__img').src = userPhoto.url;
   pictureElement.querySelector('.picture__stat--likes').textContent = userPhoto.likes;
   pictureElement.querySelector('.picture__stat--comments').textContent = userPhoto.comments.length;
 
