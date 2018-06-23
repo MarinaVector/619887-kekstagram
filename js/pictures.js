@@ -45,13 +45,13 @@ var getUniqArray = function (min, max) {
         found = true;
         break;
       }
-    };
+    }
     if (!found) {
       myArray[myArray.length] = randomNumber;
     }
-  };
+  }
 
-    return myArray;
+  return myArray;
 };
 
 var generateRandomValue = function (array) {
@@ -85,7 +85,7 @@ var generateUsersPhotosObjects = function (count) {
     };
 
     usersPhotos[i] = userPhotoObject;
-  };
+  }
 
   return usersPhotos;
 };
@@ -129,7 +129,7 @@ for (var i = 0; i < commentsArray.length; i++) {
   commentsArray[i].classList.add('social__comment--text');
   commentsArray[i].querySelector('img').src = 'img/avatar-' + avatarCommentUrlNumber[i] + '.svg';
   commentsArray[i].querySelector('.social__text').textContent = usersPhotoSet[i].comments;
-};
+}
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 
