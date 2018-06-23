@@ -39,19 +39,17 @@ var getUniqArray = function (min, max) {
 
   for (var j = 0; myArray.length < max; j++) {
     var randomNumber = generateNumber(min, max);
-
     var found = false;
-
     for (var i = 0; i < myArray.length; i++) {
       if (myArray[i] === randomNumber) {
         found = true;
         break;
       }
-    }
-
+    };
     if (!found) {
       myArray[myArray.length] = randomNumber;
     }
+  };
 
     return myArray;
 };
@@ -87,7 +85,7 @@ var generateUsersPhotosObjects = function (count) {
     };
 
     usersPhotos[i] = userPhotoObject;
-  }
+  };
 
   return usersPhotos;
 };
