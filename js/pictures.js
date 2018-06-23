@@ -39,16 +39,19 @@ var getUniqArray = function (min, max) {
 
   for (var j = 0; myArray.length < max; j++) {
     var randomNumber = generateNumber(min, max);
+
     var found = false;
+
     for (var i = 0; i < myArray.length; i++) {
-      if (myArray[i] === randomNumber){
-      found = true;
-      break;
+      if (myArray[i] === randomNumber) {
+        found = true;
+        break;
       }
-    };
+    }
+
     if (!found) {
-      myArray[myArray.length]=randomNumber; }
-    };
+      myArray[myArray.length] = randomNumber;
+    }
 
     return myArray;
 };
@@ -84,7 +87,7 @@ var generateUsersPhotosObjects = function (count) {
     };
 
     usersPhotos[i] = userPhotoObject;
-  };
+  }
 
   return usersPhotos;
 };
@@ -128,7 +131,7 @@ for (var i = 0; i < commentsArray.length; i++) {
   commentsArray[i].classList.add('social__comment--text');
   commentsArray[i].querySelector('img').src = 'img/avatar-' + avatarCommentUrlNumber[i] + '.svg';
   commentsArray[i].querySelector('.social__text').textContent = usersPhotoSet[i].comments;
-};
+}
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 
