@@ -131,7 +131,7 @@ for (var i = 0; i < commentsArray.length; i++) {
   commentsArray[i].classList.add('social__comment--text');
   commentsArray[i].querySelector('img').src = 'img/avatar-' + avatarCommentUrlNumber[i] + '.svg';
   commentsArray[i].querySelector('.social__text').textContent = usersPhotoSet[i].comments;
-}
+};
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 
