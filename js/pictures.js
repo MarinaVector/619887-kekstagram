@@ -122,6 +122,10 @@ var generateCommentsObjects = function (count) {
 
   var uniqArray = getUniqArray(MIN_URL, MAX_URL_AVATAR);
 
+  if (count === 0) {
+    count++;
+  }
+
   for (var i = 0; i < count; i++) {
 
     var userCommentObject = {
@@ -137,7 +141,7 @@ var generateCommentsObjects = function (count) {
 
 var createCommentElement = function (arrayObject) {
 
-  var commentElement = commentsList.querySelector('li').cloneNode(true);
+  var commentElement = commentTemplate.querySelector('li').cloneNode(true);
 
   commentElement.classList.add('social__comment--text');
   commentElement.querySelector('img').src = arrayObject.url;
@@ -169,11 +173,21 @@ var renderBigPicture = function (arrayObjects) {
   commentsList.appendChild(renderCommentsList(usersCommentsSet));
 };
 
+var commentDelete = function () {
+  var commentArray = commentsList.querySelectorAll('li');
 
+  for (var i = 0; i < commentArray.length; i++) {
+    commentArray[i].remove();
+  };
+
+};
+
+var commentTemplate = document.querySelector('#someCommentTemplate').content;
 var pictureTemplate = document.querySelector('#picture').content;
 var bigPicture = document.querySelector('.big-picture');
 var commentsList = bigPicture.querySelector('.social__comments');
 var usersPhotoSet = generateUsersPhotosObjects(USERS_PHOTOS_COUNT);
+commentDelete();
 renderPictures(usersPhotoSet);
 renderBigPicture(usersPhotoSet);
 
