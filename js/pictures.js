@@ -178,7 +178,7 @@ var commentDelete = function () {
 
   for (var i = 0; i < commentArray.length; i++) {
     commentArray[i].remove();
-  };
+  }
 
 };
 
