@@ -53,22 +53,6 @@ var generateRandomValue = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
 
-var generateRandomValueList = function (array) {
-  var randomValueList = [];
-
-  randomValueList.length = Math.floor(Math.random() * array.length + 1);
-
-  if (randomValueList.length === 0) {
-      randomValueList.length++;
-  };
-
-  for (var i = 0; i < randomValueList.length; i++) {
-    randomValueList[i] = generateRandomValue(array);
-  }
-
-  return randomValueList;
-};
-
 var generateRandomIndexArray = function (array) {
   var randomIndex = Math.floor(Math.random() * array.length);
   return randomIndex;
@@ -84,7 +68,7 @@ var generateComment = function (array) {
     randomUniqValueArray = randomUniqValueArrayTwo;
   }
 
-return randomUniqValueArray;
+  return randomUniqValueArray;
 };
 
 var generateUsersPhotosObjects = function (count) {
@@ -153,11 +137,11 @@ var generateCommentsObjects = function (count) {
 
 var createCommentElement = function (arrayObject) {
 
-    var commentElement = commentsList.querySelector('li').cloneNode(true);
+  var commentElement = commentsList.querySelector('li').cloneNode(true);
 
-    commentElement.classList.add('social__comment--text');
-    commentElement.querySelector('img').src = arrayObject.url;
-    commentElement.querySelector('.social__text').textContent = arrayObject.commentText;
+  commentElement.classList.add('social__comment--text');
+  commentElement.querySelector('img').src = arrayObject.url;
+  commentElement.querySelector('.social__text').textContent = arrayObject.commentText;
 
   return commentElement;
 };
