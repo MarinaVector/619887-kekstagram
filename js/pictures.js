@@ -217,7 +217,7 @@ var minusImageSize = function () {
   if (SCALE_VALUE <= SCALE_STEP) {
     SCALE_VALUE = SCALE_STEP;
   }
-  resizeControlValue.value  = SCALE_VALUE * 100 + '%';
+  resizeControlValue.value = SCALE_VALUE * 100 + '%';
   uploadImageWrapper.style = 'transform: scale(' + SCALE_VALUE + ')';
 };
 
@@ -226,14 +226,14 @@ var plusImageSize = function () {
   if (SCALE_VALUE >= 1) {
     SCALE_VALUE = 1;
   }
-  resizeControlValue.value  = SCALE_VALUE * 100 + '%';
+  resizeControlValue.value = SCALE_VALUE * 100 + '%';
   uploadImageWrapper.style = 'transform: scale(' + SCALE_VALUE + ')';
 };
 
 var openImgUploadOverlay = function () {
   imgUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
-  resizeControlValue.value  = SCALE_VALUE * 100 + '%';
+  resizeControlValue.value = SCALE_VALUE * 100 + '%';
   resizeControlMinus.addEventListener('click', minusImageSize);
   resizeControlPlus.addEventListener('click', plusImageSize);
   imgUploadFieldset.addEventListener('change', radioChecked);
@@ -269,6 +269,7 @@ var commentsList = bigPicture.querySelector('.social__comments');
 var usersPhotoSet = generateUsersPhotosObjects(USERS_PHOTOS_COUNT);
 commentDelete();
 renderPictures(usersPhotoSet);
+renderBigPicture(usersPhotoSet);
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 
