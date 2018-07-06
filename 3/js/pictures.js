@@ -98,6 +98,8 @@ var createPicture = function (userPhoto) {
   pictureElement.querySelector('.picture__stat--likes').textContent = userPhoto.likes;
   pictureElement.querySelector('.picture__stat--comments').textContent = generateRandomIndexArray(getUniqArray(MIN_URL, MAX_URL_AVATAR));
 
+  pictureElement.addEventListener('click', renderBigPicture);
+
   return pictureElement;
 };
 
@@ -161,7 +163,6 @@ var renderCommentsList = function (array) {
 };
 
 var renderBigPicture = function (arrayObjects) {
-  document.querySelector('.big-picture').classList.remove('hidden');
 
   var usersCommentsSet = generateCommentsObjects(generateRandomIndexArray(getUniqArray(MIN_URL, MAX_URL_AVATAR)));
 
@@ -196,6 +197,55 @@ var uploadImageWrapper = imgUploadOverlay.querySelector('.img-upload__preview');
 var uploadImage = uploadImageWrapper.querySelector('img');
 var imgUploadFieldset = imgUploadOverlay.querySelector('.img-upload__effects');
 
+
+// ---------------------------------Module 4---------------------------------------------
+
+// -----------------------------------------------------------------
+
+var line = imgUploadOverlay.querySelector('.scale__line');
+var pin = imgUploadOverlay.querySelector('.scale__pin');
+
+
+var changeFilterLevel = function () {
+  var lineWidth = line.offsetWidth;
+  var pinLeft = pin.offsetLeft;
+  var pinPositionX = Math.round(pinLeft * 100 / lineWidth);
+
+  var effectIndex = 0;
+  if (pinPositionX < 34) {
+    effectIndex = 1;
+  }
+
+  imgUploadOverlay.querySelector('.scale__value').value = pinPositionX;
+
+  var classList = uploadImage.classList;
+  for (var i = 0; i < classList.length; i++) {
+    switch (classList[i]) {
+      case 'effects__preview--chrome':
+        uploadImageWrapper.style = 'filter: grayscale(' + (pinPositionX * 0.01) + ')';
+        break;
+      case 'effects__preview--sepia':
+        uploadImageWrapper.style = 'filter: sepia(' + (pinPositionX * 0.01) + ')';
+        break;
+      case 'effects__preview--marvin':
+        uploadImageWrapper.style = 'filter: invert(' + pinPositionX + '%' + ')';
+        break;
+      case 'effects__preview--phobos':
+        uploadImageWrapper.style = 'filter: blur(' + (pinPositionX * 0.03) + 'px' + ')';
+        break;
+      case 'effects__preview--heat':
+        uploadImageWrapper.style = 'filter: brightness(' + (pinPositionX * 0.03 + effectIndex) + ')';
+        break;
+      default:
+        uploadImageWrapper.style = 'filter: none';
+    }
+    classList.remove(classList[i]);
+  }
+};
+
+
+// -----------------------------------------------------------------
+
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeImgUploadOverlay();
@@ -203,13 +253,19 @@ var onPopupEscPress = function (evt) {
 };
 
 var radioChecked = function (evt) {
+  imgUploadOverlay.querySelector('.scale').classList.remove('hidden');
   var classList = uploadImage.classList;
   for (var i = 0; i < classList.length; i++) {
     classList.remove(classList[i]);
   }
   if (evt.target.checked) {
     classList.add('effects__preview--' + evt.target.value);
+    if (evt.target.value === 'none') {
+      imgUploadOverlay.querySelector('.scale').classList.add('hidden');
+    }
   }
+  uploadImageWrapper.style = 'filter: none';
+  pin.addEventListener('mouseup', changeFilterLevel);
 };
 
 var minusImageSize = function () {
@@ -237,6 +293,7 @@ var openImgUploadOverlay = function () {
   resizeControlMinus.addEventListener('click', minusImageSize);
   resizeControlPlus.addEventListener('click', plusImageSize);
   imgUploadFieldset.addEventListener('change', radioChecked);
+  imgUploadOverlay.querySelector('.scale').classList.add('hidden');
 };
 
 var closeImgUploadOverlay = function () {
@@ -262,6 +319,10 @@ buttonImgUploadCancel.addEventListener('keydown', function (evt) {
   }
 });
 
+
+// ---------------------------------Module 4---------------------------------------------
+
+
 var commentTemplate = document.querySelector('#someCommentTemplate').content;
 var pictureTemplate = document.querySelector('#picture').content;
 var bigPicture = document.querySelector('.big-picture');
@@ -269,7 +330,6 @@ var commentsList = bigPicture.querySelector('.social__comments');
 var usersPhotoSet = generateUsersPhotosObjects(USERS_PHOTOS_COUNT);
 commentDelete();
 renderPictures(usersPhotoSet);
-renderBigPicture(usersPhotoSet);
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 
