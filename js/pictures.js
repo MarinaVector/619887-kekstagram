@@ -92,7 +92,7 @@ var generateUsersPhotosObjects = function (count) {
     var userPhotoObject = {
       url: 'photos/' + uniqArray[i] + '.jpg',
       likes: generateNumber(MIN_LIKES, MAX_LIKES),
-      comments: generateComment(COMMENTS_STORAGE),
+      comments: generateCommentsObjects(generateRandomIndexArray(getUniqArray(MIN_URL, MAX_URL_AVATAR))),
       description: generateRandomValue(DESCRIPTION_STORAGE)
     };
 
@@ -111,7 +111,7 @@ var createPicture = function (userPhoto) {
 
   pictureElement.querySelector('.picture__img').src = userPhoto.url;
   pictureElement.querySelector('.picture__stat--likes').textContent = userPhoto.likes;
-  pictureElement.querySelector('.picture__stat--comments').textContent = generateRandomIndexArray(getUniqArray(MIN_URL, MAX_URL_AVATAR));
+  pictureElement.querySelector('.picture__stat--comments').textContent = userPhoto.comments.length;
 
   return pictureElement;
 };
@@ -190,25 +190,21 @@ var renderCommentsList = function (array) {
 var renderBigPicture = function (userPhoto) {
   bigPicture.classList.remove('hidden');
 
-  var usersCommentsSet = generateCommentsObjects(generateRandomIndexArray(getUniqArray(MIN_URL, MAX_URL_AVATAR)));
-
   bigPicture.querySelector('.big-picture__img img').src = userPhoto.url;
   bigPicture.querySelector('.likes-count').textContent = userPhoto.likes;
-  bigPicture.querySelector('.comments-count').textContent = usersCommentsSet.length;
+  bigPicture.querySelector('.comments-count').textContent = userPhoto.comments.length;
   bigPicture.querySelector('.social__caption').textContent = userPhoto.description;
 
-  commentsList.appendChild(renderCommentsList(usersCommentsSet));
+  commentsList.appendChild(renderCommentsList(userPhoto.comments));
 
   document.addEventListener('keydown', onPopupEscPress);
 };
 
 var commentDelete = function () {
   var commentArray = commentsList.querySelectorAll('li');
-
   for (var i = 0; i < commentArray.length; i++) {
     commentArray[i].remove();
   }
-
 };
 
 var changeFilterLevel = function () {
@@ -227,22 +223,22 @@ var changeFilterLevel = function () {
   for (var i = 0; i < classList.length; i++) {
     switch (classList[i]) {
       case 'effects__preview--chrome':
-        uploadImageWrapper.style = 'filter: grayscale(' + (pinPositionX * 0.01) + ')';
+        uploadImage.style = 'filter: grayscale(' + (pinPositionX * 0.01) + ')';
         break;
       case 'effects__preview--sepia':
-        uploadImageWrapper.style = 'filter: sepia(' + (pinPositionX * 0.01) + ')';
+        uploadImage.style = 'filter: sepia(' + (pinPositionX * 0.01) + ')';
         break;
       case 'effects__preview--marvin':
-        uploadImageWrapper.style = 'filter: invert(' + pinPositionX + '%' + ')';
+        uploadImage.style = 'filter: invert(' + pinPositionX + '%' + ')';
         break;
       case 'effects__preview--phobos':
-        uploadImageWrapper.style = 'filter: blur(' + (pinPositionX * 0.03) + 'px' + ')';
+        uploadImage.style = 'filter: blur(' + (pinPositionX * 0.03) + 'px' + ')';
         break;
       case 'effects__preview--heat':
-        uploadImageWrapper.style = 'filter: brightness(' + (pinPositionX * 0.03 + effectIndex) + ')';
+        uploadImage.style = 'filter: brightness(' + (pinPositionX * 0.03 + effectIndex) + ')';
         break;
       default:
-        uploadImageWrapper.style = 'filter: none';
+        uploadImage.style = 'filter: none';
     }
     classList.remove(classList[i]);
   }
@@ -263,6 +259,9 @@ var radioChecked = function (evt) {
   }
   if (evt.target.checked) {
     classList.add('effects__preview--' + evt.target.value);
+    resizeControlValue.value = 100 + '%';
+    SCALE_VALUE = 1;
+    uploadImage.style = 'none';
     if (evt.target.value === 'none') {
       imgUploadOverlay.querySelector('.scale').classList.add('hidden');
     }
@@ -294,6 +293,16 @@ var closeBigPicture = function () {
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
+var clearImgUploadOverlay = function () {
+  var classList = uploadImage.classList;
+  for (var i = 0; i < classList.length; i++) {
+    classList.remove(classList[i]);
+  }
+  SCALE_VALUE = 1;
+  uploadImageWrapper.style = 'none';
+  document.querySelector('.img-upload__form').reset();
+};
+
 var openImgUploadOverlay = function () {
   imgUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
@@ -311,6 +320,7 @@ var closeImgUploadOverlay = function () {
   resizeControlMinus.removeEventListener('click', minusImageSize);
   resizeControlPlus.removeEventListener('click', plusImageSize);
   imgUploadFieldset.removeEventListener('change', radioChecked);
+  clearImgUploadOverlay();
 };
 
 inputIdUploadFile.addEventListener('change', function () {
