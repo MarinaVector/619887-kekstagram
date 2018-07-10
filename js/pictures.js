@@ -188,6 +188,8 @@ var renderCommentsList = function (array) {
 };
 
 var renderBigPicture = function (userPhoto) {
+  commentDelete();
+
   bigPicture.classList.remove('hidden');
 
   bigPicture.querySelector('.big-picture__img img').src = userPhoto.url;
@@ -347,5 +349,5 @@ buttonBigPictureCancel.addEventListener('keydown', function (evt) {
   }
 });
 
-commentDelete();
+
 renderPictures(generateUsersPhotosObjects(USERS_PHOTOS_COUNT));
