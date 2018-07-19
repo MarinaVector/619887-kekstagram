@@ -316,7 +316,6 @@ var splitString = function (evt) {
   var tagsArray = target.value.split(' ');
 
   for (var i = 0; i < tagsArray.length; i++) {
-
     var tagSymbols = tagsArray[i].split('');
 
     if (/[a-zа-я0-9]#/g.test(tagsArray[i])) {
@@ -410,6 +409,5 @@ buttonBigPictureCancel.addEventListener('keydown', function (evt) {
     closeBigPicture();
   }
 });
-
 
 renderPictures(generateUsersPhotosObjects(USERS_PHOTOS_COUNT));
