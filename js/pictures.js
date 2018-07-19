@@ -49,6 +49,7 @@ var uploadForm = document.querySelector('.img-upload__form');
 var hashtagsInput = uploadForm.querySelector('.text__hashtags');
 var commentArea = uploadForm.querySelector('.text__description');
 var checkedRadioDefault = uploadForm.querySelector('.effects__radio[checked]');
+var originalImg = uploadForm.querySelector('#effect-none');
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 bigPicture.querySelector('.social__loadmore').classList.add('visually-hidden');
@@ -259,6 +260,7 @@ var onPopupEscPress = function (evt) {
 
 var radioChecked = function (evt) {
   imgUploadOverlay.querySelector('.scale').classList.remove('hidden');
+  originalImg.removeAttribute('checked');
   var classList = uploadImage.classList;
   for (var i = 0; i < classList.length; i++) {
     classList.remove(classList[i]);
@@ -353,6 +355,7 @@ var clearImgUploadOverlay = function () {
 
 var openImgUploadOverlay = function () {
   checkedRadioDefault.removeAttribute('checked');
+  originalImg.setAttribute('checked', '');
   imgUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
   resizeControlValue.value = SCALE_VALUE * 100 + '%';
