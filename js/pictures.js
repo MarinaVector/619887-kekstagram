@@ -45,6 +45,11 @@ var pin = imgUploadOverlay.querySelector('.scale__pin');
 var bigPicture = document.querySelector('.big-picture');
 var buttonBigPictureCancel = bigPicture.querySelector('#picture-cancel');
 var commentsList = bigPicture.querySelector('.social__comments');
+var uploadForm = document.querySelector('.img-upload__form');
+var hashtagsInput = uploadForm.querySelector('.text__hashtags');
+var commentArea = uploadForm.querySelector('.text__description');
+var checkedRadioDefault = uploadForm.querySelector('.effects__radio[checked]');
+var originalImg = uploadForm.querySelector('#effect-none');
 
 bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
 bigPicture.querySelector('.social__loadmore').classList.add('visually-hidden');
@@ -255,6 +260,7 @@ var onPopupEscPress = function (evt) {
 
 var radioChecked = function (evt) {
   imgUploadOverlay.querySelector('.scale').classList.remove('hidden');
+  originalImg.removeAttribute('checked');
   var classList = uploadImage.classList;
   for (var i = 0; i < classList.length; i++) {
     classList.remove(classList[i]);
@@ -290,6 +296,48 @@ var plusImageSize = function () {
   uploadImageWrapper.style = 'transform: scale(' + SCALE_VALUE + ')';
 };
 
+var doubleTagDetector = function (arr) {
+  var obj = {};
+
+  for (var i = 0; i < arr.length; i++) {
+    var str = arr[i].toLowerCase();
+    obj[str] = true;
+  }
+
+  var result = Object.keys(obj);
+
+  var doubleTag = false;
+  if (result.length < arr.length) {
+    doubleTag = true;
+  }
+  return doubleTag;
+};
+
+var splitString = function (evt) {
+  var target = evt.target;
+  var tagsArray = target.value.split(' ');
+
+  for (var i = 0; i < tagsArray.length; i++) {
+    var tagSymbols = tagsArray[i].split('');
+
+    if (/[a-zа-я0-9]#/g.test(tagsArray[i])) {
+      target.setCustomValidity('Хэштеги должны разделяться пробелами перед символом "#"');
+    } else if (tagSymbols[0] !== '#') {
+      target.setCustomValidity('Хэштег должен начинаться с символа "#"');
+    } else if (tagsArray[i] === '#') {
+      target.setCustomValidity('Хэштег не может состоять только из символа "#"');
+    } else if (tagsArray.length > 5) {
+      target.setCustomValidity('Вы можете добавить не более 5-ти хэштегов к одной фотографии');
+    } else if (tagSymbols.length > 20) {
+      target.setCustomValidity('Максимальная длина хэштега не должна превышать 20-ти символов, включая "#"');
+    } else if (doubleTagDetector(tagsArray)) {
+      target.setCustomValidity('Хэштеги должны быть уникальными');
+    } else {
+      target.setCustomValidity('');
+    }
+  }
+};
+
 var closeBigPicture = function () {
   bigPicture.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
@@ -306,6 +354,8 @@ var clearImgUploadOverlay = function () {
 };
 
 var openImgUploadOverlay = function () {
+  checkedRadioDefault.removeAttribute('checked');
+  originalImg.setAttribute('checked', '');
   imgUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
   resizeControlValue.value = SCALE_VALUE * 100 + '%';
@@ -313,6 +363,19 @@ var openImgUploadOverlay = function () {
   resizeControlPlus.addEventListener('click', plusImageSize);
   imgUploadFieldset.addEventListener('change', radioChecked);
   imgUploadOverlay.querySelector('.scale').classList.add('hidden');
+  hashtagsInput.addEventListener('input', splitString);
+  hashtagsInput.addEventListener('focus', function () {
+    document.removeEventListener('keydown', onPopupEscPress);
+  });
+  commentArea.addEventListener('focus', function () {
+    document.removeEventListener('keydown', onPopupEscPress);
+  });
+  hashtagsInput.addEventListener('blur', function () {
+    document.addEventListener('keydown', onPopupEscPress);
+  });
+  commentArea.addEventListener('blur', function () {
+    document.addEventListener('keydown', onPopupEscPress);
+  });
 };
 
 var closeImgUploadOverlay = function () {
@@ -323,6 +386,7 @@ var closeImgUploadOverlay = function () {
   resizeControlPlus.removeEventListener('click', plusImageSize);
   imgUploadFieldset.removeEventListener('change', radioChecked);
   clearImgUploadOverlay();
+  hashtagsInput.removeEventListener('input', splitString);
 };
 
 inputIdUploadFile.addEventListener('change', function () {
@@ -348,6 +412,5 @@ buttonBigPictureCancel.addEventListener('keydown', function (evt) {
     closeBigPicture();
   }
 });
-
 
 renderPictures(generateUsersPhotosObjects(USERS_PHOTOS_COUNT));
