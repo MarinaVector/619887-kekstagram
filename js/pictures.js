@@ -42,6 +42,7 @@ var uploadImage = uploadImageWrapper.querySelector('img');
 var imgUploadFieldset = imgUploadOverlay.querySelector('.img-upload__effects');
 var line = imgUploadOverlay.querySelector('.scale__line');
 var pin = imgUploadOverlay.querySelector('.scale__pin');
+var scaleLevel = imgUploadOverlay.querySelector('.scale__level');
 var bigPicture = document.querySelector('.big-picture');
 var buttonBigPictureCancel = bigPicture.querySelector('#picture-cancel');
 var commentsList = bigPicture.querySelector('.social__comments');
@@ -214,41 +215,77 @@ var commentDelete = function () {
   }
 };
 
-var changeFilterLevel = function () {
-  var lineWidth = line.offsetWidth;
-  var pinLeft = pin.offsetLeft;
-  var pinPositionX = Math.round(pinLeft * 100 / lineWidth);
+var changeFilterLevel = function (pinPositionValue) {
 
   var effectIndex = 0;
-  if (pinPositionX < 34) {
+  if (pinPositionValue < 34) {
     effectIndex = 1;
   }
 
-  imgUploadOverlay.querySelector('.scale__value').value = pinPositionX;
+  imgUploadOverlay.querySelector('.scale__value').value = pinPositionValue;
 
   var classList = uploadImage.classList;
   for (var i = 0; i < classList.length; i++) {
     switch (classList[i]) {
       case 'effects__preview--chrome':
-        uploadImage.style = 'filter: grayscale(' + (pinPositionX * 0.01) + ')';
+        uploadImage.style = 'filter: grayscale(' + (pinPositionValue * 0.01) + ')';
         break;
       case 'effects__preview--sepia':
-        uploadImage.style = 'filter: sepia(' + (pinPositionX * 0.01) + ')';
+        uploadImage.style = 'filter: sepia(' + (pinPositionValue * 0.01) + ')';
         break;
       case 'effects__preview--marvin':
-        uploadImage.style = 'filter: invert(' + pinPositionX + '%' + ')';
+        uploadImage.style = 'filter: invert(' + pinPositionValue + '%' + ')';
         break;
       case 'effects__preview--phobos':
-        uploadImage.style = 'filter: blur(' + (pinPositionX * 0.03) + 'px' + ')';
+        uploadImage.style = 'filter: blur(' + (pinPositionValue * 0.03) + 'px' + ')';
         break;
       case 'effects__preview--heat':
-        uploadImage.style = 'filter: brightness(' + (pinPositionX * 0.03 + effectIndex) + ')';
+        uploadImage.style = 'filter: brightness(' + (pinPositionValue * 0.03 + effectIndex) + ')';
         break;
       default:
         uploadImage.style = 'filter: none';
     }
     classList.remove(classList[i]);
   }
+};
+
+var movesPin = function (evt) {
+
+  var startCoordPin = {
+    x: evt.clientX
+  };
+
+  var onMouseMovePin = function (moveEvt) {
+
+    var shiftPin = {
+      x: startCoordPin.x - moveEvt.clientX
+    };
+
+    startCoordPin = {
+      x: moveEvt.clientX
+    };
+
+    var pinPositionValue = Math.round((pin.offsetLeft - shiftPin.x) * 100 / line.offsetWidth);
+    if (pinPositionValue <= 0) {
+      pinPositionValue = 0;
+    } else if (pinPositionValue >= 100) {
+      pinPositionValue = 100;
+    }
+
+    pin.style.left = pinPositionValue + '%';
+    scaleLevel.style.width = pinPositionValue + '%';
+
+    changeFilterLevel(pinPositionValue);
+  };
+
+  var onMouseUpPin = function () {
+
+    document.removeEventListener('mousemove', onMouseMovePin);
+    document.removeEventListener('mouseup', onMouseUpPin);
+  };
+
+  document.addEventListener('mousemove', onMouseMovePin);
+  document.addEventListener('mouseup', onMouseUpPin);
 };
 
 var onPopupEscPress = function (evt) {
@@ -275,7 +312,7 @@ var radioChecked = function (evt) {
     }
   }
   uploadImageWrapper.style = 'filter: none';
-  pin.addEventListener('mouseup', changeFilterLevel);
+  pin.addEventListener('mousedown', movesPin);
 };
 
 var minusImageSize = function () {
