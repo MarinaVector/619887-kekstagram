@@ -10,6 +10,7 @@ var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var SCALE_VALUE = 1;
 var SCALE_STEP = 0.25;
+var LINE_WIDTH = 453;
 
 var COMMENTS_STORAGE = [
   'Всё отлично!',
@@ -40,8 +41,8 @@ var resizeControlValue = imgUploadOverlay.querySelector('.resize__control--value
 var uploadImageWrapper = imgUploadOverlay.querySelector('.img-upload__preview');
 var uploadImage = uploadImageWrapper.querySelector('img');
 var imgUploadFieldset = imgUploadOverlay.querySelector('.img-upload__effects');
-var line = imgUploadOverlay.querySelector('.scale__line');
 var pin = imgUploadOverlay.querySelector('.scale__pin');
+var scaleLevel = imgUploadOverlay.querySelector('.scale__level');
 var bigPicture = document.querySelector('.big-picture');
 var buttonBigPictureCancel = bigPicture.querySelector('#picture-cancel');
 var commentsList = bigPicture.querySelector('.social__comments');
@@ -214,41 +215,73 @@ var commentDelete = function () {
   }
 };
 
-var changeFilterLevel = function () {
-  var lineWidth = line.offsetWidth;
-  var pinLeft = pin.offsetLeft;
-  var pinPositionX = Math.round(pinLeft * 100 / lineWidth);
+var changeFilterLevel = function (positionValue) {
 
-  var effectIndex = 0;
-  if (pinPositionX < 34) {
-    effectIndex = 1;
+  var pinPosition = Math.round(positionValue);
+
+  imgUploadOverlay.querySelector('.scale__value').value = pinPosition;
+
+  var effectIndex = 1;
+
+  var uploadImageClass = uploadImage.classList;
+  switch (uploadImageClass[0]) {
+    case 'effects__preview--chrome':
+      uploadImage.style = 'filter: grayscale(' + (pinPosition * 0.01) + ')';
+      break;
+    case 'effects__preview--sepia':
+      uploadImage.style = 'filter: sepia(' + (pinPosition * 0.01) + ')';
+      break;
+    case 'effects__preview--marvin':
+      uploadImage.style = 'filter: invert(' + pinPosition + '%' + ')';
+      break;
+    case 'effects__preview--phobos':
+      uploadImage.style = 'filter: blur(' + (pinPosition * 0.03) + 'px' + ')';
+      break;
+    case 'effects__preview--heat':
+      uploadImage.style = 'filter: brightness(' + (pinPosition * 0.02 + effectIndex) + ')';
+      break;
+    default:
+      uploadImage.style = 'filter: none';
   }
+};
 
-  imgUploadOverlay.querySelector('.scale__value').value = pinPositionX;
+var movesPin = function (evt) {
 
-  var classList = uploadImage.classList;
-  for (var i = 0; i < classList.length; i++) {
-    switch (classList[i]) {
-      case 'effects__preview--chrome':
-        uploadImage.style = 'filter: grayscale(' + (pinPositionX * 0.01) + ')';
-        break;
-      case 'effects__preview--sepia':
-        uploadImage.style = 'filter: sepia(' + (pinPositionX * 0.01) + ')';
-        break;
-      case 'effects__preview--marvin':
-        uploadImage.style = 'filter: invert(' + pinPositionX + '%' + ')';
-        break;
-      case 'effects__preview--phobos':
-        uploadImage.style = 'filter: blur(' + (pinPositionX * 0.03) + 'px' + ')';
-        break;
-      case 'effects__preview--heat':
-        uploadImage.style = 'filter: brightness(' + (pinPositionX * 0.03 + effectIndex) + ')';
-        break;
-      default:
-        uploadImage.style = 'filter: none';
+  var startCoordPin = {
+    x: evt.clientX
+  };
+
+  var onMouseMovePin = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shiftPin = {
+      x: startCoordPin.x - moveEvt.clientX
+    };
+
+    startCoordPin = {
+      x: moveEvt.clientX
+    };
+
+    var pinPositionValue = (pin.offsetLeft - shiftPin.x) * 100 / LINE_WIDTH;
+    if (pinPositionValue <= 0) {
+      pinPositionValue = 0;
+    } else if (pinPositionValue >= 100) {
+      pinPositionValue = 100;
     }
-    classList.remove(classList[i]);
-  }
+
+    pin.style.left = pinPositionValue + '%';
+    scaleLevel.style.width = pinPositionValue + '%';
+
+    changeFilterLevel(pinPositionValue);
+  };
+
+  var onMouseUpPin = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMovePin);
+    document.removeEventListener('mouseup', onMouseUpPin);
+  };
+
+  document.addEventListener('mousemove', onMouseMovePin);
+  document.addEventListener('mouseup', onMouseUpPin);
 };
 
 var onPopupEscPress = function (evt) {
@@ -275,7 +308,12 @@ var radioChecked = function (evt) {
     }
   }
   uploadImageWrapper.style = 'filter: none';
-  pin.addEventListener('mouseup', changeFilterLevel);
+
+  pin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
+  imgUploadOverlay.querySelector('.scale__value').value = 100;
+
+  pin.addEventListener('mousedown', movesPin);
 };
 
 var minusImageSize = function () {
