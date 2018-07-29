@@ -41,7 +41,6 @@ var resizeControlValue = imgUploadOverlay.querySelector('.resize__control--value
 var uploadImageWrapper = imgUploadOverlay.querySelector('.img-upload__preview');
 var uploadImage = uploadImageWrapper.querySelector('img');
 var imgUploadFieldset = imgUploadOverlay.querySelector('.img-upload__effects');
-var line = imgUploadOverlay.querySelector('.scale__line');
 var pin = imgUploadOverlay.querySelector('.scale__pin');
 var scaleLevel = imgUploadOverlay.querySelector('.scale__level');
 var bigPicture = document.querySelector('.big-picture');
@@ -225,7 +224,7 @@ var changeFilterLevel = function (positionValue) {
   var effectIndex = 1;
 
   var uploadImageClass = uploadImage.classList;
-    switch (uploadImageClass[0]) {
+  switch (uploadImageClass[0]) {
     case 'effects__preview--chrome':
       uploadImage.style = 'filter: grayscale(' + (pinPosition * 0.01) + ')';
       break;
