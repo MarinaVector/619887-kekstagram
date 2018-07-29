@@ -308,6 +308,11 @@ var radioChecked = function (evt) {
     }
   }
   uploadImageWrapper.style = 'filter: none';
+
+  pin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
+  imgUploadOverlay.querySelector('.scale__value').value = 100;
+
   pin.addEventListener('mousedown', movesPin);
 };
 
