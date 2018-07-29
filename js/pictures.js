@@ -10,6 +10,7 @@ var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var SCALE_VALUE = 1;
 var SCALE_STEP = 0.25;
+var LINE_WIDTH = 453;
 
 var COMMENTS_STORAGE = [
   'Всё отлично!',
@@ -215,37 +216,33 @@ var commentDelete = function () {
   }
 };
 
-var changeFilterLevel = function (pinPositionValue) {
+var changeFilterLevel = function (positionValue) {
 
-  var effectIndex = 0;
-  if (pinPositionValue < 34) {
-    effectIndex = 1;
-  }
+  var pinPosition = Math.round(positionValue);
 
-  imgUploadOverlay.querySelector('.scale__value').value = pinPositionValue;
+  imgUploadOverlay.querySelector('.scale__value').value = pinPosition;
 
-  var classList = uploadImage.classList;
-  for (var i = 0; i < classList.length; i++) {
-    switch (classList[i]) {
-      case 'effects__preview--chrome':
-        uploadImage.style = 'filter: grayscale(' + (pinPositionValue * 0.01) + ')';
-        break;
-      case 'effects__preview--sepia':
-        uploadImage.style = 'filter: sepia(' + (pinPositionValue * 0.01) + ')';
-        break;
-      case 'effects__preview--marvin':
-        uploadImage.style = 'filter: invert(' + pinPositionValue + '%' + ')';
-        break;
-      case 'effects__preview--phobos':
-        uploadImage.style = 'filter: blur(' + (pinPositionValue * 0.03) + 'px' + ')';
-        break;
-      case 'effects__preview--heat':
-        uploadImage.style = 'filter: brightness(' + (pinPositionValue * 0.03 + effectIndex) + ')';
-        break;
-      default:
-        uploadImage.style = 'filter: none';
-    }
-    classList.remove(classList[i]);
+  var effectIndex = 1;
+
+  var uploadImageClass = uploadImage.classList;
+    switch (uploadImageClass[0]) {
+    case 'effects__preview--chrome':
+      uploadImage.style = 'filter: grayscale(' + (pinPosition * 0.01) + ')';
+      break;
+    case 'effects__preview--sepia':
+      uploadImage.style = 'filter: sepia(' + (pinPosition * 0.01) + ')';
+      break;
+    case 'effects__preview--marvin':
+      uploadImage.style = 'filter: invert(' + pinPosition + '%' + ')';
+      break;
+    case 'effects__preview--phobos':
+      uploadImage.style = 'filter: blur(' + (pinPosition * 0.03) + 'px' + ')';
+      break;
+    case 'effects__preview--heat':
+      uploadImage.style = 'filter: brightness(' + (pinPosition * 0.02 + effectIndex) + ')';
+      break;
+    default:
+      uploadImage.style = 'filter: none';
   }
 };
 
@@ -256,7 +253,7 @@ var movesPin = function (evt) {
   };
 
   var onMouseMovePin = function (moveEvt) {
-
+    moveEvt.preventDefault();
     var shiftPin = {
       x: startCoordPin.x - moveEvt.clientX
     };
@@ -265,7 +262,7 @@ var movesPin = function (evt) {
       x: moveEvt.clientX
     };
 
-    var pinPositionValue = Math.round((pin.offsetLeft - shiftPin.x) * 100 / line.offsetWidth);
+    var pinPositionValue = (pin.offsetLeft - shiftPin.x) * 100 / LINE_WIDTH;
     if (pinPositionValue <= 0) {
       pinPositionValue = 0;
     } else if (pinPositionValue >= 100) {
@@ -278,8 +275,8 @@ var movesPin = function (evt) {
     changeFilterLevel(pinPositionValue);
   };
 
-  var onMouseUpPin = function () {
-
+  var onMouseUpPin = function (upEvt) {
+    upEvt.preventDefault();
     document.removeEventListener('mousemove', onMouseMovePin);
     document.removeEventListener('mouseup', onMouseUpPin);
   };
